@@ -19,7 +19,7 @@ import seedu.address.model.ingredient.IngredientName;
  */
 public class SetCommand extends Command {
 
-    public static final String COMMAND_WORD = "set";
+    public static final String COMMAND_WORD = "i-set";
 
     public static final String MESSAGE_ARGUMENTS = "Ingredient- %s, Amount- %2$s";
 

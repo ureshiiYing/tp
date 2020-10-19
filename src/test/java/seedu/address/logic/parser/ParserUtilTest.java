@@ -168,4 +168,20 @@ public class ParserUtilTest {
 
         assertEquals(expectedTagSet, actualTagSet);
     }
+
+    @Test
+    public void parseNumberSold_invalidInput_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseNumberSold("-1"));
+        assertThrows(ParseException.class, () -> ParserUtil.parseNumberSold("+100"));
+    }
+
+    @Test
+    public void parseNumberSold_validInput_success() throws Exception {
+        // No whitespaces
+        assertEquals(123, ParserUtil.parseNumberSold("123"));
+
+        // Leading and trailing whitespaces
+        assertEquals(123, ParserUtil.parseNumberSold("  123  "));
+    }
+
 }

@@ -34,6 +34,7 @@ public class IngredientName {
      * @param ingredientName a given string of ingredient name
      */
     public static boolean isValidIngredientName(String ingredientName) {
+        requireNonNull(ingredientName);
         return Arrays.asList(INGREDIENTS).contains(ingredientName);
     }
 

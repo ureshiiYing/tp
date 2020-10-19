@@ -22,7 +22,6 @@ class JsonSerializableAddressBook {
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
-    private final List<JsonAdaptedPerson> archivedPersons = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
@@ -39,8 +38,6 @@ class JsonSerializableAddressBook {
      */
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
         persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
-        archivedPersons.addAll(source.getArchivedList().stream().map(JsonAdaptedPerson::new)
-                .collect(Collectors.toList()));
     }
 
     /**
@@ -56,13 +53,6 @@ class JsonSerializableAddressBook {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
             addressBook.addPerson(person);
-        }
-        for (JsonAdaptedPerson jsonAdaptedPerson : archivedPersons) {
-            Person archivedPerson = jsonAdaptedPerson.toModelType();
-            if (addressBook.hasPerson(archivedPerson)) {
-                throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
-            }
-            addressBook.archivedPerson(archivedPerson);
         }
         return addressBook;
     }

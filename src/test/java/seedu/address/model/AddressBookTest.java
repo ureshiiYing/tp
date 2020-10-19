@@ -98,11 +98,6 @@ public class AddressBookTest {
             return persons;
         }
 
-
-        public ObservableList<Person> getArchivedList() {
-
-            return null;
-        }
     }
 
 }

@@ -92,6 +92,7 @@ public class Ingredient {
         final StringBuilder builder = new StringBuilder();
         builder.append(" Ingredient: ")
                 .append(getIngredientName())
+                .append(", ")
                 .append(" Amount: ")
                 .append(getAmount());
         return builder.toString();

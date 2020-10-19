@@ -2,10 +2,11 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMERGENCY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_ACTIVE_PERSONS;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import seedu.address.commons.util.CollectionUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Address;
+import seedu.address.model.person.ArchiveStatus;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
@@ -29,7 +31,7 @@ import seedu.address.model.tag.Tag;
  */
 public class EditCommand extends Command {
 
-    public static final String COMMAND_WORD = "edit";
+    public static final String COMMAND_WORD = "c-edit";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
             + "by the index number used in the displayed person list. "
@@ -37,6 +39,7 @@ public class EditCommand extends Command {
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_EMERGENCY + "EMERGENCY_CONTACT] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
@@ -79,7 +82,7 @@ public class EditCommand extends Command {
         }
 
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_ACTIVE_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, editedPerson));
     }
 
@@ -92,10 +95,12 @@ public class EditCommand extends Command {
 
         Name updatedName = editPersonDescriptor.getName().orElse(personToEdit.getName());
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
+        Phone updatedEmergency = editPersonDescriptor.getEmergency().orElse(personToEdit.getEmergency());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        ArchiveStatus archiveStatus = new ArchiveStatus(false);
+        return new Person(updatedName, updatedPhone, updatedEmergency, updatedAddress, archiveStatus, updatedTags);
 
-        return new Person(updatedName, updatedPhone, updatedAddress, updatedTags);
     }
 
     @Override
@@ -123,7 +128,9 @@ public class EditCommand extends Command {
     public static class EditPersonDescriptor {
         private Name name;
         private Phone phone;
+        private Phone emergency;
         private Address address;
+        private ArchiveStatus archiveStatus;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {}
@@ -135,7 +142,9 @@ public class EditCommand extends Command {
         public EditPersonDescriptor(EditPersonDescriptor toCopy) {
             setName(toCopy.name);
             setPhone(toCopy.phone);
+            setEmergency(toCopy.emergency);
             setAddress(toCopy.address);
+            setArchiveStatus(toCopy.archiveStatus);
             setTags(toCopy.tags);
         }
 
@@ -143,7 +152,7 @@ public class EditCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, address, archiveStatus, tags);
         }
 
         public void setName(Name name) {
@@ -162,6 +171,14 @@ public class EditCommand extends Command {
             return Optional.ofNullable(phone);
         }
 
+        public void setEmergency(Phone emergency) {
+            this.emergency = emergency;
+        }
+
+        public Optional<Phone> getEmergency() {
+            return Optional.ofNullable(emergency);
+        }
+
         public void setAddress(Address address) {
             this.address = address;
         }
@@ -170,6 +187,13 @@ public class EditCommand extends Command {
             return Optional.ofNullable(address);
         }
 
+        public Optional<ArchiveStatus> getArchiveStatus() {
+            return Optional.ofNullable(this.archiveStatus);
+        }
+
+        public void setArchiveStatus(ArchiveStatus archiveStatus) {
+            this.archiveStatus = archiveStatus;
+        }
         /**
          * Sets {@code tags} to this object's {@code tags}.
          * A defensive copy of {@code tags} is used internally.
@@ -204,7 +228,9 @@ public class EditCommand extends Command {
 
             return getName().equals(e.getName())
                     && getPhone().equals(e.getPhone())
+                    && getEmergency().equals(e.getEmergency())
                     && getAddress().equals(e.getAddress())
+                    && getArchiveStatus().equals(e.getArchiveStatus())
                     && getTags().equals(e.getTags());
         }
     }

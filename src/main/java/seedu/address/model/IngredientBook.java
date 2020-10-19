@@ -1,11 +1,13 @@
 package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.model.ingredient.Ingredient;
+import seedu.address.model.ingredient.IngredientName;
 import seedu.address.model.ingredient.UniqueIngredientList;
 
 /**
@@ -64,17 +66,36 @@ public class IngredientBook implements ReadOnlyIngredientBook {
 
 
     public void setIngredient(Ingredient target, Ingredient newAmount) {
-        requireNonNull(newAmount);
-
+        requireAllNonNull(target, newAmount);
         ingredients.setIngredient(target, newAmount);
+    }
+
+    /**
+     * Returns the ingredient with the input ingredient name, if
+     * not found, return null.
+     *
+     * @param ingredientName ingredient name
+     * @return ingredient with the input ingredient name
+     */
+    public Ingredient findIngredientByName(IngredientName ingredientName) {
+        requireNonNull(ingredientName);
+
+        return ingredients.findIngredientByName(ingredientName);
     }
 
     //// util methods
 
     @Override
     public String toString() {
-        return ingredients.asUnmodifiableObservableList().size() + " ingredients";
-        // TODO: refine later
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < ingredients.size(); i++) {
+            builder.append(ingredients.get(i).toString()).append("\n");
+        }
+        return ingredients.asUnmodifiableObservableList().size()
+                + " ingredients\n"
+                + builder;
     }
 
     @Override

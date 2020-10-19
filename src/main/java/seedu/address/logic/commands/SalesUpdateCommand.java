@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_BSBM;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_BSPM;
 
 import java.util.Map;
 
@@ -15,17 +16,16 @@ import seedu.address.model.Model;
  */
 public class SalesUpdateCommand extends Command {
 
-    public static final String COMMAND_WORD = "sales";
+    public static final String COMMAND_WORD = "s-update";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Updates the sales of the drinks as entered. "
             + "Existing sales record will be overwritten by the input.\n"
             + "Parameters: A/NUM B/NUM ... where A, B refers to the drink abbreviation. "
-            + "You must record at least one sales item.\n"
-            + "Example: " + COMMAND_WORD + " "
-            + PREFIX_BSBM + "100";
+            + "You must record the sales of at least one item, as a positive unsigned integer.\n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_BSBM + "100" + " " + PREFIX_BSPM + "0";
 
-    public static final String MESSAGE_ADD_SALES_SUCCESS = "Added sales to the record. \n This is the current "
-            + "record now = %s";
+    public static final String MESSAGE_SUCCESS = "Added sales to the record. You may use "
+            + SalesListCommand.COMMAND_WORD + " to check the current record.";
 
     private final Map<Drink, Integer> sales;
 
@@ -44,7 +44,7 @@ public class SalesUpdateCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         model.overwrite(sales);
-        return new CommandResult(String.format(MESSAGE_ADD_SALES_SUCCESS, model.getSalesBook()));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, model.getSalesBook()));
     }
 
     @Override

@@ -48,4 +48,11 @@ public class SalesUpdateCommandParserTest {
         // no parameters
         assertParseFailure(parser, SalesUpdateCommand.COMMAND_WORD, expectedMessage);
     }
+
+    @Test
+    public void parse_negativeSalesNumber_failure() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SalesUpdateCommand.MESSAGE_USAGE);
+        // no parameters
+        assertParseFailure(parser, SalesUpdateCommand.COMMAND_WORD + "BSBM/-100", expectedMessage);
+    }
 }

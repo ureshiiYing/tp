@@ -21,9 +21,13 @@ import seedu.address.model.Drink;
  */
 public class SalesUpdateCommandParser implements Parser<SalesUpdateCommand> {
 
+    private static final int INVALID_INPUT = -1;
+
     /**
      * Parses the given {@code String} of arguments in the context of the SalesUpdateCommand
      * and returns a SalesUpdateCommand object for execution.
+     *
+     * The default value is 0 for drink items which the user did not provide the input.
      *
      * @param args user input to parse
      * @return a SalesUpdateCommand object for execution
@@ -41,14 +45,15 @@ public class SalesUpdateCommandParser implements Parser<SalesUpdateCommand> {
         // populate the map with argmultimap's values
         for (int i = 0; i < drinkPrefixes.length; i++) {
             Optional<String> numSold = argMultimap.getValue(drinkPrefixes[i]);
-            int value = numSold.map(x -> Integer.parseInt(x)).orElse(0);
+            String value = numSold.orElse("0");
+            int intValue = ParserUtil.parseNumberSold(value);
 
-            if (value > 0) {
+            if (intValue > 0) {
                 drinkCounter++;
             }
 
             Drink drink = Drink.valueOf(drinkPrefixes[i].toString().replace("/", ""));
-            sales.put(drink, value);
+            sales.put(drink, intValue);
         }
 
         if (drinkCounter == 0) {
